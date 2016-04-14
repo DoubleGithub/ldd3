@@ -127,9 +127,9 @@ static void sbull_request(struct request_queue *q)
  */
 static int sbull_xfer_bio(struct sbull_dev *dev, struct bio *bio)
 {
-	int i;
+	struct bvec_iter i;
 	struct bio_vec *bvec;
-	sector_t sector = bio->bi_sector;
+	sector_t sector = bio->bi_iter.bi_sector;
 
 	/* Do each segment independently. */
 	bio_for_each_segment(bvec, bio, i) {
