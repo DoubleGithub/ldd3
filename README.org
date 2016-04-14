@@ -3,6 +3,7 @@
 
 * Tasks [1/2]
   - [X] Porting to linux kernel 3.13
+  - [X] Porting to linux kernel 3.14
   - [ ] Poring to linux kernel 3.18
 
 
