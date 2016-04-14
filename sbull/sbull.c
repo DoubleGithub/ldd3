@@ -116,7 +116,7 @@ static void sbull_request(struct request_queue *q)
     //    			req->sector, req->current_nr_sectors,
     //    			req->flags);
 		sbull_transfer(dev, blk_rq_pos(req), blk_rq_cur_sectors(req),
-				req->buffer, rq_data_dir(req));
+				bio_data(req->bio), rq_data_dir(req));
 		__blk_end_request_cur(req, 0);
 	}
 }
@@ -191,7 +191,7 @@ static void sbull_make_request(struct request_queue *q, struct bio *bio)
 
 	status = sbull_xfer_bio(dev, bio);
 	bio_endio(bio, status);
-	return 0;
+	return ;
 }
 
 
