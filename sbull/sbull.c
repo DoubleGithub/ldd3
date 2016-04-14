@@ -152,7 +152,7 @@ static int sbull_xfer_request(struct sbull_dev *dev, struct request *req)
     
 	__rq_for_each_bio(bio, req) {
 		sbull_xfer_bio(dev, bio);
-		nsect += bio->bi_size/KERNEL_SECTOR_SIZE;
+		nsect += bio->bi_iter.bi_size/KERNEL_SECTOR_SIZE;
 	}
 	return nsect;
 }
