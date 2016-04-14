@@ -173,7 +173,7 @@ static int jiqtasklet_proc_show(struct seq_file *m, void *arg)
 	jiq_data.m = m;
 
 	tasklet_schedule(&jiq_tasklet);
-	interruptible_sleep_on(&jiq_wait);    /* sleep till completion */
+	wait_event_interruptible(jiq_wait, !(m->count > LIMIT || m->count > m->size));  /* wait till completion */
 
 	return 0;
 }
@@ -202,7 +202,7 @@ static int jitimer_proc_show(struct seq_file *m, void *arg)
 
 	jiq_print(&jiq_data);   /* print and go to sleep */
 	add_timer(&jiq_timer);
-	interruptible_sleep_on(&jiq_wait);  /* RACE */
+	wait_event_interruptible(jiq_wait, !(m->count > LIMIT || m->count > m->size));  /* RACE */
 	del_timer_sync(&jiq_timer);  /* in case a signal woke us up */
     
 	return 0;
