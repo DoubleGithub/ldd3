@@ -213,7 +213,7 @@ static int sbull_open(struct block_device *bdev, fmode_t mode)
 	return 0;
 }
 
-static int sbull_release(struct gendisk *disk, fmode_t mode)
+static void sbull_release(struct gendisk *disk, fmode_t mode)
 {
 	struct sbull_dev *dev = disk->private_data;
 
@@ -226,7 +226,7 @@ static int sbull_release(struct gendisk *disk, fmode_t mode)
 	}
 	spin_unlock(&dev->lock);
 
-	return 0;
+	return ;
 }
 
 /*

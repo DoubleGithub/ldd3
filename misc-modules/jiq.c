@@ -173,7 +173,7 @@ static int jiqtasklet_proc_show(struct seq_file *m, void *arg)
 	jiq_data.m = m;
 
 	tasklet_schedule(&jiq_tasklet);
-	wait_event_interruptible(jiq_wait, !(m->count > LIMIT || m->count > m->size));  /* wait till completion */
+	wait_event_interruptible(jiq_wait, m->count > LIMIT || m->count > m->size);  /* wait till completion */
 
 	return 0;
 }
