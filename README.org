@@ -102,14 +102,14 @@
 
 **** prink
 
-     /printk/ 函数将消息发送到一个环形Buffer： __LOG_BUF_LEN字节长，大
+     /printk/ 函数将消息发送到一个环形Buffer:__LOG_BUF_LEN字节长，大
      小从4 KB到1 MB大小。可以通过syslog或读取/proc/kmsg来获取该buffer
      中的信息。其中，读取/proc/kmsg的方式会消耗掉buffer中的数据。
 
 **** rate limit
 
      有时，同一个Log信息打印太多，会影响Log分析，可以通过
-     printk_ratelimit()来控制一条Log的打印次数。 使用方法一般如下所示：
+     =printk_ratelimit()= 来控制一条Log的打印次数。 使用方法一般如下所示：
 
      #+BEGIN_SRC c
        if (printk_ratelimit( ))
@@ -165,17 +165,17 @@
      - =基本调用步骤:=
        1) 初始化一个等待队列头：
 
-          init_waitqueue_head(&ret->wait_queue);
+          =init_waitqueue_head(&ret->wait_queue);=
 
-          注： 判断队列是否为空： waitqueue_active(...)， 返回false即表示队列为空.
+          注： 判断队列是否为空： =waitqueue_active(...)= ， 返回false即表示队列为空.
 
        2) 等待某个条件发生：
 
-           wait_event(...) 或 wait_event_timeout(...)
+           =wait_event(...)= 或 =wait_event_timeout(...)=
 
        3) 唤醒队列
 
-           wake_up_all(...)
+           =wake_up_all(...)=
 
      - =手动睡眠=
        1) 初始化一个等待队列项
@@ -199,7 +199,7 @@
                                  int state);
           #+END_SRC
 
-       3) 调用prepare_to_wait后，可以调用schedule()
+       3) 调用 =prepare_to_wait= 后，可以调用 =schedule()=
 
        4) 当schedule返回，执行清理工作。
 
@@ -448,7 +448,7 @@
              printk("snull: error %i registering device \"%s\"\n",
                     result, snull_devs[i]->name);
        #+END_SRC
-     - netif_start_queue/netif_stop_queue 标记Driver是否可以传输数据包。
+     - =netif_start_queue/netif_stop_queue= 标记Driver是否可以传输数据包。
        #+BEGIN_SRC c
          /*
            If you must disable packet transmission from anywhere other than your hard_start_xmit
