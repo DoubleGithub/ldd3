@@ -1,7 +1,7 @@
 ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
-obj-m	:= vms.o
+obj-m	:= sysfs_test1.o
 
 else
 

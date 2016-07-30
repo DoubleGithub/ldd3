@@ -1,7 +1,9 @@
 ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
-obj-m	:= vms.o
+obj-m	:= procfs_test1.o
+obj-m	+= procfs_test2.o
+obj-m	+= procfs_test3.o
 
 else
 
