@@ -116,7 +116,7 @@ static void sbull_request(struct request_queue *q)
     //    			req->sector, req->current_nr_sectors,
     //    			req->flags);
 		sbull_transfer(dev, blk_rq_pos(req), blk_rq_cur_sectors(req),
-				req->buffer, rq_data_dir(req));
+				bio_data(req->bio), rq_data_dir(req));
 		__blk_end_request_cur(req, 0);
 	}
 }
@@ -127,9 +127,9 @@ static void sbull_request(struct request_queue *q)
  */
 static int sbull_xfer_bio(struct sbull_dev *dev, struct bio *bio)
 {
-	int i;
-	struct bio_vec *bvec;
-	sector_t sector = bio->bi_sector;
+	struct bvec_iter i;
+	struct bio_vec bvec;
+	sector_t sector = bio->bi_iter.bi_sector;
 
 	/* Do each segment independently. */
 	bio_for_each_segment(bvec, bio, i) {
@@ -152,7 +152,7 @@ static int sbull_xfer_request(struct sbull_dev *dev, struct request *req)
     
 	__rq_for_each_bio(bio, req) {
 		sbull_xfer_bio(dev, bio);
-		nsect += bio->bi_size/KERNEL_SECTOR_SIZE;
+		nsect += bio->bi_iter.bi_size/KERNEL_SECTOR_SIZE;
 	}
 	return nsect;
 }
@@ -191,7 +191,7 @@ static void sbull_make_request(struct request_queue *q, struct bio *bio)
 
 	status = sbull_xfer_bio(dev, bio);
 	bio_endio(bio, status);
-	return 0;
+	return ;
 }
 
 
@@ -213,7 +213,7 @@ static int sbull_open(struct block_device *bdev, fmode_t mode)
 	return 0;
 }
 
-static int sbull_release(struct gendisk *disk, fmode_t mode)
+static void sbull_release(struct gendisk *disk, fmode_t mode)
 {
 	struct sbull_dev *dev = disk->private_data;
 
@@ -226,7 +226,7 @@ static int sbull_release(struct gendisk *disk, fmode_t mode)
 	}
 	spin_unlock(&dev->lock);
 
-	return 0;
+	return ;
 }
 
 /*

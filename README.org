@@ -1,9 +1,10 @@
 #+TITLE: 源码说明
 #+DATE: 2015-12-17
 
-* Tasks [1/2]
+* Tasks [3/3]
   - [X] Porting to linux kernel 3.13
-  - [ ] Poring to linux kernel 3.18
+  - [X] Porting to linux kernel 3.14
+  - [X] Poring to linux kernel 3.18
 
 
 * Source Code说明
@@ -482,11 +483,115 @@
        Any ioctl command that is not recognized by the protocol layer
        is passed to the device layer. These device-related ioctl
        commands accept a third argument from user space, a =struct
-       ifreq *= . 
+       ifreq *= .
+
+*** PCI驱动
+    how a PCI driver can find its hardware and gain access to it.
+
+**** PCI寻址 
+     Each PCI peripheral is identified by a bus number, a device
+     number and a function number. In Linux, it support domain. 
+     domain(16bits) + bus(8bits) + device(5bits) + function(3bits)
+
+     每当一个外围设备都会响应三种地址的查询:
+     1. Memory Locations
+     2. I/O ports
+     3. Configuration Registers
+
+     其中对于处于同一个PCI总线上的设备,前两个地址是一样的. 
+
+     三个或五个PCI寄存器标识一个设备: vendorID,
+     deviceID,class. additional registers: subsystem vendorID,
+     subsystem deviceID. 
+     
+     #+BEGIN_SRC c
+       struct pci_device_id {
+         __u32 vendor;
+         __u32 device;
+         //Vendor ID and device ID, can be PCI_ANY_ID if a driver can handle any vendor or device Id.
+
+         __u32 subvendor;
+         __u32 subdevice;
+         //Subsystem vendor and subsystem device id
+
+         __u32 class;
+         __u32 class_mask;
+         //device class such as "parallel", "ehternet", can be PCI_ANY_ID if a driver can handle any type of subsystem ID.
+
+         kernel_ulong_t driver_data;
+         //hold information to differentiate between different devices if it wants to .
+       };
 
 
+     #+END_SRC
+
+**** =MODULE_DEVICE_TABLE=
+     this macro is used to export =pci_device_id= structure to user
+     space to allow the hotplug and module loading.
+
+**** 注策PCI设备 
+     #+BEGIN_SRC c
+       static struct pci_driver pci_driver = {
+         .name = "pci_skel",
+         .id_table = ids,
+         .probe = probe,
+         .remove = remove,
+       };
+
+       static __init pci_skel_init(void)
+       {
+         return pci_register_driver(&pci_driver);
+       }
+     #+END_SRC
+
+**** Enabling the PCI device
+     before a driver can access any device resource(I/O region or
+     interrupt), the driver must call the =pci_enable_device= . 
+
+**** Accessing the configuration space
+     #+BEGIN_SRC c
+       int pci_read_config_byte(struct pci_dev *dev, int where, u8 *val);
+       int pci_read_config_word(struct pci_dev *dev, int where, u16*val);
+       int pci_read_config_dword(struct pci_dev *dev, int where, u32 *val);
+
+       int pci_write_config_byte(struct pci_dev *dev, int where, u8 val);
+       int pci_write_config_word(struct pci_dev *dev, int where, u16 val);
+       int pci_write_config_dword(struct pci_dev *dev, int where, u32 val);
 
 
+       static unsigned char skel_get_revision(struct pci_dev *dev)
+       {
+         u8 revision;
+
+         pci_read_config_byte(dev, PCI_REVISION_ID, &revision);
+         return revision;
+       }
+
+     #+END_SRC
+
+**** Accessing IO/Memory Resource
+     #+BEGIN_SRC c
+       unsigned long pci_resource_start(struct pci_dev *dev, int bar);
+       unsigned long pci_resource_end(struct pci_dev *dev, int bar);
+       unsigned long pci_resource_flags(struct pci_dev *dev, int bar);
+     #+END_SRC
+
+     Resource flags are:
+     =IORESOURCE_IO= , =IORESOURCE_MEM= :
+     If the associated I/O region exists, one and only one of these
+     flags is set.
+
+     =IORESOURCE_PREFETCH=, =IORESOURCE_READONLY= :
+     those flags tell whether a Memory region is prefetchable and/or
+     write protected. the latter flag is never set for PCI resources. 
+
+**** Interrupt
+     #+BEGIN_SRC c
+       result = pci_read_config_byte(dev, PCI_INTERRUPT_LINE, &myirq);
+       if (result) {
+         /* deal with error */
+        }
+     #+END_SRC
 
 ** 引用
 
