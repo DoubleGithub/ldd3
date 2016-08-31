@@ -86,8 +86,7 @@ static int jiq_print(void *ptr)
 		return 0;
 	}
 
-	if (len == 0)
-		len = seq_printf(m,"    time  delta preempt   pid cpu command\n");
+	seq_printf(m,"    time  delta preempt   pid cpu command\n");
 
   	/* intr_count is only exported since 1.3.5, but 1.99.4 is needed anyways */
 	seq_printf(m, "%9li  %4li     %3i %5i %3i %s\n",

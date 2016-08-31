@@ -1,7 +1,8 @@
 
 SUBDIRS =  misc-progs misc-modules \
            scull scullc scullp scullv short snull skull sculld sbull \
-	   shortprint pci simple usb  lddbus tty input
+	   shortprint pci simple usb  lddbus tty input procfs sysfs \
+	   module chrdev netlink readfile
 
 all: subdirs
 
