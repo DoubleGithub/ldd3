@@ -58,6 +58,8 @@ static int use_napi = 0;
 module_param(use_napi, int, 0);
 
 
+static unsigned long trans_start;
+
 /*
  * A structure representing an in-flight packet.
  */
@@ -522,7 +524,7 @@ int snull_tx(struct sk_buff *skb, struct net_device *dev)
 		len = ETH_ZLEN;
 		data = shortpkt;
 	}
-	dev->trans_start = jiffies; /* save the timestamp */
+	trans_start = jiffies; /* save the timestamp */
 
 	/* Remember the skb, so we can free it at interrupt time */
 	priv->skb = skb;
@@ -541,7 +543,7 @@ void snull_tx_timeout (struct net_device *dev)
 	struct snull_priv *priv = netdev_priv(dev);
 
 	PDEBUG("Transmit timeout at %ld, latency %ld\n", jiffies,
-			jiffies - dev->trans_start);
+			jiffies - trans_start);
         /* Simulate a transmission interrupt to get things moving */
 	priv->status = SNULL_TX_INTR;
 	snull_interrupt(0, dev, NULL);
@@ -627,7 +629,7 @@ int snull_change_mtu(struct net_device *dev, int new_mtu)
 
 static const struct header_ops snull_header_ops = {
         .create  = snull_header,
-	.rebuild = snull_rebuild_header
+	/*.rebuild = snull_rebuild_header*/
 };
 
 static const struct net_device_ops snull_netdev_ops = {

@@ -4,8 +4,8 @@
 * Tasks [3/3]
   - [X] Porting to linux kernel 3.13
   - [X] Porting to linux kernel 3.14
-  - [X] Poring to linux kernel 3.18
-
+  - [X] Portng to linux kernel 3.18
+  - [ ] Porting to linux kernel 4.7
 
 * Source Code说明
 

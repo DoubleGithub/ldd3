@@ -29,6 +29,8 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <linux/ioctl.h>
+#include <stropts.h>
+#include <err.h>
 #include "ctracer.h"
 
 static enum io_type {

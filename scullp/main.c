@@ -25,7 +25,7 @@
 #include <linux/types.h>	/* size_t */
 #include <linux/proc_fs.h>
 #include <linux/fcntl.h>	/* O_ACCMODE */
-#include <linux/aio.h>
+#include <linux/uio.h>
 #include <asm/uaccess.h>
 #include <linux/seq_file.h>
 #include "scullp.h"		/* local definitions */
@@ -431,13 +431,11 @@ struct async_work {
 static void scullp_do_deferred_op(struct work_struct *work)
 {
 	struct async_work *stuff = container_of(work, struct async_work, work.work);
-	aio_complete(stuff->iocb, stuff->result, 0);
+        stuff->iocb->ki_complete(stuff->iocb, stuff->result, 0);
 	kfree(stuff);
 }
 
-
-static int scullp_defer_op(int write, struct kiocb *iocb, const struct iovec *iovec,
-			   unsigned long nr_segs, loff_t pos)
+static int scullp_defer_op(int write, struct kiocb *iocb, struct iov_iter* iter)
 {
 	struct async_work *stuff;
 	int result = 0;
@@ -445,11 +443,11 @@ static int scullp_defer_op(int write, struct kiocb *iocb, const struct iovec *io
 	unsigned long seg = 0;
 
 	/* Copy now while we can access the buffer */
-	for (seg = 0; seg < nr_segs; seg++) {
+	for (seg = 0; seg < iter->nr_segs; seg++) {
 		if (write)
-			len = scullp_write(iocb->ki_filp, iovec[seg].iov_base, iovec[seg].iov_len, &pos);
+			len = scullp_write(iocb->ki_filp, iter->iov[seg].iov_base, iter->iov[seg].iov_len, &iocb->ki_pos);
 		else
-			len = scullp_read(iocb->ki_filp, iovec[seg].iov_base, iovec[seg].iov_len, &pos);
+			len = scullp_read(iocb->ki_filp, iter->iov[seg].iov_base, iter->iov[seg].iov_len, &iocb->ki_pos);
 
 		if (len < 0)
 			return len;
@@ -472,17 +470,14 @@ static int scullp_defer_op(int write, struct kiocb *iocb, const struct iovec *io
 	return -EIOCBQUEUED;
 }
 
-
-static ssize_t scullp_aio_read(struct kiocb *iocb, const struct iovec *iovec,
-			       unsigned long nr_segs, loff_t pos)
+static ssize_t scullp_read_iter(struct kiocb *iocb, struct iov_iter *iter)
 {
-	return scullp_defer_op(0, iocb, iovec, nr_segs, pos);
+	return scullp_defer_op(0, iocb, iter);
 }
 
-static ssize_t scullp_aio_write(struct kiocb *iocb, const struct iovec *iovec, 
-				unsigned long nr_segs, loff_t pos)
+static ssize_t scullp_write_iter(struct kiocb *iocb, struct iov_iter *iter)
 {
-	return scullp_defer_op(1, iocb, iovec, nr_segs, pos);
+	return scullp_defer_op(1, iocb, iter);
 }
 
 
@@ -506,8 +501,8 @@ struct file_operations scullp_fops = {
 	.mmap =	     scullp_mmap,
 	.open =	     scullp_open,
 	.release =   scullp_release,
-	.aio_read =  scullp_aio_read,
-	.aio_write = scullp_aio_write,
+        .read_iter = scullp_read_iter,
+        .write_iter = scullp_write_iter,
 };
 
 int scullp_trim(struct scullp_dev *dev)

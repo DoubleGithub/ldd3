@@ -4,7 +4,7 @@
  #include <linux/module.h>
  #include <linux/fs.h>
 
- #define PATH "/home/fuyajun/.bash_history"
+ #define PATH "/home/jackson/.bash_history"
  int mod_init(void)
  {
        struct file *fp;

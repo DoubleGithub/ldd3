@@ -21,12 +21,14 @@
 static int parameter;
 
 static struct configfs_attribute ldt_parameter_attr = {
-	.ca_owner = THIS_MODULE, .ca_name = "parameter",
+	.ca_owner = THIS_MODULE,
+        .ca_name = "parameter",
 	.ca_mode = S_IRUGO | S_IWUSR
 };
 
 static struct configfs_attribute ldt_description_attr = {
-	.ca_owner = THIS_MODULE, .ca_name = "description",
+	.ca_owner = THIS_MODULE,
+        .ca_name = "description",
 	.ca_mode = S_IRUGO
 };
 
@@ -59,11 +61,12 @@ static ssize_t ldt_attr_store(struct config_item *item, struct configfs_attribut
 }
 
 static struct config_item_type ci_type = {
-	.ct_item_ops = (struct configfs_item_operations[]){ {
-		.show_attribute = ldt_attr_show,
-		.store_attribute = ldt_attr_store,} },
-	.ct_attrs = ldt_attrs,
-	.ct_owner = THIS_MODULE,
+  .ct_item_ops = {
+    .show_attribute = ldt_attr_show,
+    .store_attribute = ldt_attr_store,
+  } ,
+  .ct_attrs = ldt_attrs,
+  .ct_owner = THIS_MODULE,
 };
 
 static struct configfs_subsystem ldt_subsys = {

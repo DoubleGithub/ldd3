@@ -16,6 +16,7 @@ ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
 obj-m	:= snull.o
+obj-m += netdev.o
 
 else
 

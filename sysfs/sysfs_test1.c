@@ -1,3 +1,19 @@
+/**
+ * Copyright (c)  2016     Yajun Fu (fuyajun1983cn@163.com)
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 #include <linux/kobject.h>
 #include <linux/string.h>
 #include <linux/sysfs.h>
@@ -49,11 +65,11 @@ static ssize_t store(struct kobject *kobj, struct kobj_attribute *attr,
 }
 
 static struct kobj_attribute foo_attribute = 
-	__ATTR(foo, 0666, show, store);
+	__ATTR(foo, 0660, show, store);
 static struct kobj_attribute bar_attribute = 
-	__ATTR(bar, 0666, show, store);
+	__ATTR(bar, 0660, show, store);
 static struct kobj_attribute baz_attribute = 
-	__ATTR(baz, 0666, show, store);
+	__ATTR(baz, 0660, show, store);
 
 /*
  * Create a group of attributes so that we can create and destroy them all

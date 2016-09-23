@@ -8,6 +8,7 @@
  * must be called /dev/ebbchar.
  * @see http://www.derekmolloy.ie/ for a full description and follow-up descriptions.
 */
+#include <unistd.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<errno.h>
