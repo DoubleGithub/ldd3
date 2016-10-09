@@ -20,16 +20,39 @@
 
 static int parameter;
 
+static ssize_t ldt_attr_description_show(struct config_item *item, char *page)
+{
+  return sprintf(page, "basic sample of configfs\n");
+}
+
+static ssize_t ldt_attr_parameter_show(struct config_item *item, char *page)
+{
+  return sprintf(page, "%d\n", parameter);
+}
+
+static ssize_t ldt_attr_parameter_store(struct config_item *item,  const char *page, size_t count)
+{
+	ssize_t ret = -EINVAL;
+        ret = kstrtoint(page, 0, &parameter);
+        if (ret)
+          return ret;
+        ret = count;
+        return ret;
+}
+
 static struct configfs_attribute ldt_parameter_attr = {
 	.ca_owner = THIS_MODULE,
         .ca_name = "parameter",
-	.ca_mode = S_IRUGO | S_IWUSR
+	.ca_mode = S_IRUGO | S_IWUSR,
+        .show = ldt_attr_parameter_show,
+        .store = ldt_attr_parameter_store,
 };
 
 static struct configfs_attribute ldt_description_attr = {
 	.ca_owner = THIS_MODULE,
         .ca_name = "description",
-	.ca_mode = S_IRUGO
+	.ca_mode = S_IRUGO,
+        .show = ldt_attr_description_show,
 };
 
 static struct configfs_attribute *ldt_attrs[] = {
@@ -38,33 +61,8 @@ static struct configfs_attribute *ldt_attrs[] = {
 	NULL,
 };
 
-static ssize_t ldt_attr_show(struct config_item *item, struct configfs_attribute *attr, char *page)
-{
-	ssize_t ret = -EINVAL;
-	if (attr == &ldt_description_attr)
-		return sprintf(page, "basic sample of configfs\n");
-	else if (attr == &ldt_parameter_attr)
-		return sprintf(page, "%d\n", parameter);
-	return ret;
-}
-
-static ssize_t ldt_attr_store(struct config_item *item, struct configfs_attribute *attr, const char *page, size_t count)
-{
-	ssize_t ret = -EINVAL;
-	if (attr == &ldt_parameter_attr) {
-		ret = kstrtoint(page, 0, &parameter);
-		if (ret)
-			return ret;
-		ret = count;
-	}
-	return ret;
-}
 
 static struct config_item_type ci_type = {
-  .ct_item_ops = {
-    .show_attribute = ldt_attr_show,
-    .store_attribute = ldt_attr_store,
-  } ,
   .ct_attrs = ldt_attrs,
   .ct_owner = THIS_MODULE,
 };
