@@ -1,11 +1,11 @@
 #+TITLE: 源码说明
 #+DATE: 2015-12-17
 
-* Tasks [3/3]
+* Tasks [4/4]
   - [X] Porting to linux kernel 3.13
   - [X] Porting to linux kernel 3.14
   - [X] Portng to linux kernel 3.18
-  - [ ] Porting to linux kernel 4.7
+  - [X] Porting to linux kernel 4.7
 
 * Source Code说明
 
