@@ -1,6 +1,44 @@
-*.log
+# backup files
 *~
+
+# log files
+*.log
+
+# dot files
+.*
+
+# git
+!.gitignore
+
+# make file
+*~
+*.o
+*.o.d
+core
+*.ko
 *.mod
+*.mod.c
 Module.symvers
 modules.order
-*.o.d
+
+# misc-progs
+misc-progs/nbtest
+misc-progs/load50
+misc-progs/mapcmp
+misc-progs/polltest
+misc-progs/mapper
+misc-progs/setlevel
+misc-progs/setconsole
+misc-progs/inp
+misc-progs/outp
+misc-progs/datasize
+misc-progs/dataalign
+misc-progs/netifdebug
+misc-progs/complete_test
+misc-progs/vms_test
+
+# others
+chrdev/test
+ldt/dio
+netlink/sender
+
