@@ -61,8 +61,8 @@ extern __thread int ret;
 #define trvtv(tv) tracef(#tv" = %u.%06u"EOL, (unsigned int)tv.tv_sec, (unsigned int)tv.tv_usec)
 #define trvs(s) tracef(#s" = \"%s\""EOL, s)
 #define trvs_(s) tracef(#s" = \"%s\" ", s)
-#define trvp(p) tracef(#p" = %08x"EOL, (unsigned)p)
-#define trvp_(p) tracef(#p" = %08x ", (unsigned)p)
+#define trvp(p) tracef(#p" = %p"EOL, p)
+#define trvp_(p) tracef(#p" = %p ", p)
 #define trvdn(d, n) {int i; tracef("%s", #d"[]="); for (i = 0; i < n; i++) tracef("%d:%d,", i, (*((int *)d+i))); tracef(EOL); }
 #define trvxn(d, n) {int i; tracef("%s", #d"[]="); for (i = 0; i < n; i++) tracef("%04x,", (*((int *)d+i))); tracef(EOL); }
 #define trvdr(record) trvdn(&record, sizeof(record)/sizeof(int));
