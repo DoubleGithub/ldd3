@@ -69,6 +69,9 @@ static int __init procfs_test1_init(void)
         return -1;
     }
 
+    /* Setting direcotry permission */
+    /* proc_set_user(mm_proc_mem, KUIDT_INIT(PROC_UID_SHELL), KGIDT_INIT(PROC_GID_WIFI)); */
+
     return 0;
 }
 
