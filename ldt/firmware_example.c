@@ -76,3 +76,4 @@ module_init(sample_init);
 module_exit(sample_exit);
 
 MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Yajun Fu <fuyajun1983cn@163.com>");

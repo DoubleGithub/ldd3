@@ -93,3 +93,6 @@ static void __exit module_leave(void)
 
 module_init(module_enter);
 module_exit(module_leave);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Yajun Fu<fuyajun1983cn@163.com");

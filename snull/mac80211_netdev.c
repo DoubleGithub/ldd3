@@ -72,3 +72,6 @@ static void __exit exit_mac80211_netdev(void)
   
 }
 module_exit(exit_mac80211_netdev);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Yajun Fu<fuyajun1983cn@163.com");
