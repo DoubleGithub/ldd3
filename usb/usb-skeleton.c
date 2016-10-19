@@ -10,6 +10,7 @@
  * This driver is based on the 2.6.3 version of drivers/usb/usb-skeleton.c 
  * but has been rewritten to be easy to read and use, as no locks are now
  * needed anymore.
+ * Doc: https://kernel.readthedocs.io/en/sphinx-samples/writing_usb_driver.html
  *
  */
 
