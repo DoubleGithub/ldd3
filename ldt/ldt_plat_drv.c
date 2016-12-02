@@ -34,8 +34,14 @@ static __devinit int ldt_plat_probe(struct platform_device *pdev)
 _entry:
 	dev_dbg(dev, "probe\n");
 	data = pdev->dev.platform_data;
+	if (data != NULL) 
+	   pr_debug("dev.platform_data: %s\n", data);
+	else
+	   pr_debug("platform_device is initialized from device tree\n");
 	irq = platform_get_irq(pdev, 0);
+	pr_debug("Irq num: %d\n", irq);
 	r = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+	pr_debug("IORESOURCE_IRQ: start=%d, end=%d\n", r->start, r->end);
 	pr_debug("pdev->dev.of_node = %p\n", pdev->dev.of_node);
 #ifdef CONFIG_OF_DEVICE
 	if (pdev->dev.of_node) {
@@ -80,13 +86,14 @@ _entry:
  *	template for OF FDT ID
  *	(Open Firmware Flat Device Tree)
  */
-
+#ifdef CONFIG_OF
 static const struct of_device_id ldt_of_match[] = {
 	{.compatible = "linux-driver-template",},
 	{},
 };
 
 MODULE_DEVICE_TABLE(of, ldt_of_match);
+#endif
 
 #ifdef CONFIG_PM
 
