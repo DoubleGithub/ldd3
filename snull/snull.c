@@ -676,6 +676,7 @@ void snull_init(struct net_device *dev)
 	 */
 	priv = netdev_priv(dev);
 	if (use_napi) {
+                /*把网络设备dev与napi绑定,一次轮询最大处理的报文数为2 */
 		netif_napi_add(dev, &priv->napi, snull_poll,2);
 	}
 	memset(priv, 0, sizeof(struct snull_priv));

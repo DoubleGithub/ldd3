@@ -54,7 +54,6 @@
     #+END_SRC
 
 ** 学习笔记
-   
 *** 内核模块
 
     - [[http://blog.csdn.net/fuyajun01/article/details/7845461][Linux内核模块]]
@@ -408,7 +407,6 @@
     - [[http://blog.csdn.net/fuyajun01/article/details/6575871][内核错误码处理宏]]
 
 *** 网络驱动
-    
 **** snull驱动设计说明
 
     - it simulates conversations with real remote hosts in order to
@@ -486,9 +484,63 @@
        commands accept a third argument from user space, a =struct
        ifreq *= .
 
+**** NAPI
+***** API
+      1. =netif_napi_add()=
+         把网络设备与napi虚拟设备绑定
+      2. 使能和禁用
+         - =netif_enalbe()=
+         - =netif_disable()=
+      3. 调度NAPI
+         =netif_schedule()=
+***** 使用说明 
+      1. 不同的网卡驱动都会为网络设备定义自己的结构体。有的是自己的结
+         构体中即包含 =net_device= 和 napi，有的是把自己的结构体放到
+         =net_device= 的priv部分。
+      2. 实现NAPI的轮询函数
+         : rx_pool(struct napi_struct *napi, int weigh)
+
+         #+BEGIN_SRC c
+           /*
+             @param wight: 一次允许处理的报文最大数量
+           ,**/
+           int rx_pool(struct napi_struct *napi, int weigh)
+           {
+             int rx_cnt = 0;
+             struct sk_buff *skb;
+
+             while (rx_cnt < weigh) {
+               skb = netdev_alloc_skb();
+               copy_skb_from_hw(skb);
+               rx_cnt++;
+               netif_receive_skb(skb); /*送内核协议栈处理*/
+             }
+
+             if (rx_cnt < weigh) {
+               /* 处理完了所有包，使能中断 */
+               napi_complete(napi);
+               enable_rx_irq();
+             }
+             return rx_cnt;
+           }
+         #+END_SRC
+      3. 把网络设备与NAPI相关联
+         : netif_napi_add(netdev, napi, rx_pool, weigh);
+      4. 注册网卡的收包中断
+         : request_irq(irq, &rx_irq_handle, 0, netdev->name, netdev);
+
+         在处理函数中，
+         #+BEGIN_SRC c
+           static irqreturn_t rx_irq_handle(int irq, void *data)
+           {
+             struct net_device *netdev = data;
+             struct napi_struct *napi = netdev_priv(netdev)->napi;
+             disable_rx_irq();
+             napi_schedule(napi);
+           }
+         #+END_SRC
 *** PCI驱动
     how a PCI driver can find its hardware and gain access to it.
-
 **** PCI寻址 
      Each PCI peripheral is identified by a bus number, a device
      number and a function number. In Linux, it support domain. 
@@ -593,6 +645,10 @@
          /* deal with error */
         }
      #+END_SRC
+
+*** ☛ TODO USB驱动
+
+*** ☛ TODO SDIO驱动
 
 ** 引用
 
