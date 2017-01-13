@@ -4,6 +4,7 @@ ifneq ($(KERNELRELEASE),)
 obj-m	:= procfs_test1.o
 obj-m	+= procfs_test2.o
 obj-m	+= procfs_test3.o
+obj-m   += procfs_test4.o
 
 else
 
@@ -18,5 +19,5 @@ endif
 
 
 clean:
-	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
+	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions *.symvers *.order
 
