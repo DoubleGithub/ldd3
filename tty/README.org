@@ -1,0 +1,21 @@
+#+TITLE: TTY驱动
+
+* 概述
+  在Linux TTY驱动架构中，主要分为三个层次结构：
+  
+  [[../images/tty.png]]
+
+  1. tty core
+     control both the flow of data across a tty device and the format
+     of the data.
+  2. tty drivers
+     focus on handling the data to and from the hardware.
+     cannot directly communicate with the line discipline, doesn't
+     realize it is present. 
+  3. tty line discipline drivers
+     format the data received from a user or the hardware, in a
+     specific manner. such as protocol conversion such as PPP or
+     Bluetooth. 
+
+  总共有三种不同类型的tty设备：console, pty and serial port. console和
+  pty内核已经实现了，新的tty设备一般是serial port类型的。
